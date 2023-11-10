@@ -1,0 +1,12 @@
+Package: PoissonERM
+Type: Package
+Title: An automation tool for binary-endpoint(s) analysis
+Version: 0.1.0
+Author: Yuchen Wang
+Maintainer: Yuchen Wang <yuchenw2015@gmail.com>
+Description: PoissonERM is to automate Exposure-Response analysis for binary-endpoint(s) using Poisson Regression. PoissonERM develops proper models for each endpoint, generate summary tables and figures for the data set and for the models, and create a .Rmd report with the modeling results.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: compiler, stats, tidyverse, broom, gridExtra, R.utils, stringi, data.table, ggcorrplot, DescTools, cowplot, PKNCA, nortest, glue
+RoxygenNote: 7.2.3

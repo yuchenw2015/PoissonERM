@@ -1,0 +1,119 @@
+---
+title: "PoissonERM: METHODS"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+## Introduction
+This document shows the methods implemented in the package-like tool `PoissonERM`. Each auto-generated html report from `PoissonERM` contains the user's modeling options, and this document is a detailed supplement explaining the model selections and variable selections.
+
+To install the package, go to https://github.com/yuchenw2015/PoissonERM.
+
+The examples of using this tool are here: https://github.com/yuchenw2015/PoissonERM-Example.
+
+## Modeling: Software and Strategy
+The E-R analyses, data processing, and generation of figures and tables were performed in R.The poisson regression analyses were performed using the glm() function in the R programming language.
+
+The analyses for each endpoint followed the below steps: 
+
+  - Univariate models were estimated to compare and select the best exposure metric, if any. The model only contains exposure metric is the base model.
+  - Predicted cumulative incidence rate from the base model are created in form of figures and tables if requested by user. 
+   - If covariates are evaluated, then a full covariate model is estimated with the selected best exposure, if any, along with all covariates specified by the user.
+  - If covariates are to be evaluated, then a backwards elimination procedure is run to determine a final model.  
+  - The final covariate model is estimated. 
+  - Risk Ratio figures and tables are created if any demographic covariates are included in the final covariate model.
+
+An E-R analysis was performed for all endpoints even if the number of events was very low.
+
+## Base Model Description
+In the base model, exposure metrics were tested as predictors for the occurrence of an event. 
+
+The linear, square-root-transformed, and log-transformed scales of exposure metrics were investigated. Since the main purpose of the E-R analysis was to identify potential relationships between endpoints and exposure metrics, the endpoint was only explored and was not part of the main analysis conclusions if no exposure metric was defined.
+
+The probability of observing an Adverse Event (AE) is described by the Poisson distribution:
+\begin{equation}
+\label{eqn:P}
+\text{P}\left(Y_{j} = n\right) = \frac{\lambda^{n}}{n!}\cdot e^{-\lambda}
+\end{equation}
+Where $\text{P}\left(Y_{j} = n\right)$ is the probability of observing $Y$ during an interval $j$, where $Y$ can take on values $n = 0, 1, 2,\dotsc$, $\lambda$ is an estimable parameter describing the mean count, and $!$ is the factorial function.
+
+The expectation for the Poisson distribution $\text{E}\left(Y_{j}\right)$ is equal to $\lambda$, and therefore $\lambda$ is the arithmetic mean of the counts occurring during a certain time interval. The variance of the Poisson distribution is not governed by an additional parameter (such as $\sigma$ for a normal distribution), but by $\lambda$ as well. Therefore, $\lambda$ defines both the mean and the variance of the distribution of observations.
+\begin{equation}
+\label{eqn:lambda}
+\lambda = \text{E}\left(Y_{j}\right) = \text{Var}\left(Y_{j}\right)
+\end{equation}
+
+A base model was developed using a poisson regression with an intercept and potentially an exposure metric as shown in below.
+\begin{equation}
+\label{eqn:mod}
+\text{log}(\lambda) = \beta_{0}+\text{log}\left(t_{j}\right)+\beta_{1}\cdot \text{Exposure}_j
+\end{equation}
+
+where $\lambda$ is the mean count, $\beta_{0}$ is the mean count when the time interval, $t$, is equal to zero, $\text{log}\left(t_{j}\right)$ is the time-interval offset (days), $\text{Exposure}_j$ is the time-weighted Exposure at the time of AE driving the response in mean count, $\beta_{1}$ is the estimable effect of exposure on the mean count.
+
+When assessing each exposure metric individually in the base model, the difference in the number of identifiable parameters (and therefore the $df$) is equal to 1. Decision making during model building was guided by evaluation of change in deviance, or $-2\cdot${log-likelihood}, between models. The Deviance (DEV) was calculated as:
+\newline
+\begin{equation}
+\label{eqn:dev}
+D=-2\log\left(\frac{L_0}{L_F}\right)
+\end{equation}
+
+where $L_0/L_F$ is the ratio of the likelihood of the null and fitted models. $D$ can be shown to be approximately $\chi^2$ distributed with degrees of freedom equal to the difference in the number of parameters estimated between the null and fitted models.
+
+Based on user's input, exposure metric selection was done in one of the following ways:
+
+  - The exposure metric met the significant level (p_val) was selected for the base model for each endpoint analyzed. If there were more than one metric that met the criteria, the metric with the smallest $p$-value was selected. If there was no metric that met the criteria, the base model would not contain any exposure metric. 
+   - The exposure metric with the largest change in deviance $\Delta D$ was selected for the base model for each endpoint analyzed, regardless of statistical significance.
+
+The generated report includes the details of user's choice.
+
+## Random Effects Model Development
+Since the Poisson regressions used only one measurement per subject, estimation of random effects was not possible.
+
+## Inclusion of Covariates and Full Model Development
+Both categorical and continuous covariates were tested for inclusion using a linear parameterization in the poisson regressions.
+
+The covariate parameter structure that was used for categorical and continuous covariates is described below:
+    -Linear parameterization for a categorical covariate x:
+\begin{equation}
+\text{COV} = 1; \text{most common}\\
+\theta=\theta_0 \cdot \text{COV}
+\end{equation}
+
+where $\theta_0$ denotes the population value of the parameter for the reference demographic characteristic. The parameter $\theta$ represents the change in the intercept when compared to the reference characteristic. 
+    -Linear parameterization for continuous covariates
+\begin{equation}
+\theta=\theta_0 \cdot (\text{COV}-\text{reference})
+\end{equation}
+
+where $\theta_0$ denotes the population value conditional on the value of the covariate, which changes linearly as a function of COV, reference value is usually the observed median value or given by user. Continuous covariates might be explored in the logarithmic scale and were tested in the models in the scale where the covariate follows a normal distribution.
+
+If the user set `con.model.ref = "No"` for not using reference value in continuous covariates parameterization, $\text{reference} = 0$.
+
+Categorical covariate would be dropped in full model development if all events occurred in only one of its categories. 
+If any of the covariates were highly correlated (e.g. AST and ALT) with a correlation coefficient $\ge0.6$, then only one of the correlated covariates was tested further based on univariate DEV. 
+The $\chi^2$ test for the log-likelihood difference in deviance between models was used to judge whether one model had a better fit over another during the backward elimination using an $\alpha$ (p_val_b) provided by user. When the removal of any of the remaining covariates results in a $\Delta D$ equivalent to p-value less than the $\alpha$ provided by user, the elimination process was stopped and the model was considered final.
+
+## Missing Data
+Missing data within covariates was imputed provided the percentage of missing values was $\le p.icon$ for continuous covariates and $\le p.icat$ for categorical covariates. $p.icon$ and $p.icat$ were provided by user. For continuous covariates, the median value was used for the imputed value. For categorical covariates, the mode was used for the imputed value. If the percentage of missing values was larger than the stated threshold, the covariates were excluded from consideration for the endpoint.
+
+## Full Model Development
+To assess the E-R relationship between potential covariates and each of the endpoints, a poisson regression model was used as: 
+\begin{equation}
+\label{eqn:LRbasecov}
+\text{log}(\lambda) = \beta_{0} + \text{log}\left(t_{j}\right) + \beta_1\cdot\text{Exposure}_j + \beta_2\cdot X_2 + \cdots + \beta_n\cdot X_n
+\end{equation}
+where $\lambda$ is the arithmetic mean of the counts occurring during a certain time interval, $\beta_0$ is the estimated intercept, $\beta_1$ is a regression coefficient (slope) representing the effect of the exposure metric, if any, based on base model development, and $\beta_2,\ldots,\beta_n$ represent the effect, if any, of each additional covariate on the log-odds of the event occurring.
+
+## Final Model Development
+Final model development started with the full model, containing the parameters from the base model and any additional covariates under consideration. The full model was then subjected to a stepwise backwards elimination procedure, outlined below. 
+
+To compare two nested models, the difference in the deviance of each of the models also follows an approximately $\chi^2$ distribution with degrees of freedom equal to the difference in the number of estimated parameters:
+
+\begin{equation}
+\label{eqn:nest}
+\left(\frac{D_{nested}-D_{full}}{df_{nested}-df_{full}}\right)\sim\chi^2_{df_{nested}-df_{full}}
+\end{equation}
+
+where $df_{nested}$ and $df_{full}$ are the degree of freedom for the nested and full models, respectively.

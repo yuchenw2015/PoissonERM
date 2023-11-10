@@ -1,0 +1,2 @@
+exportPattern("^[[:alpha:]]+")
+import(compiler, stats, tidyverse, broom, gridExtra, R.utils, stringi, data.table, ggcorrplot, DescTools, cowplot, PKNCA, nortest, glue)
