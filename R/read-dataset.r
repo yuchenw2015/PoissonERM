@@ -37,9 +37,9 @@ read.dataset.func <- function(){
   if(nrow(obsdf)==0) stop("No observations found with the provided enpoints, PROJ, and study numbers.")
   if(!"UID2" %in% colnames(x = obsdf)){
     if("PROT" %in% colnames(obsdf)){
-      obsdf$UID2 <- paste(obsdf[,"PROT"], obsdf[, pat.num], obsdf[, EVDUR], sep = " ")
+      obsdf$UID2 <- paste(obsdf[,"PROT"], obsdf[, pat.num], sep = " ")
     }else{
-      obsdf$UID2 <- paste(obsdf[, pat.num], obsdf[, EVDUR], sep = " ")
+      obsdf$UID2 <- paste(obsdf[, pat.num], sep = " ")
     }
     if("PROJ" %in% colnames(obsdf)){
       obsdf$UID2 <- paste(obsdf[,"PROJ"], obsdf[, "UID2"], sep = " ")
