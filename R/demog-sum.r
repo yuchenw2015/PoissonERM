@@ -83,6 +83,7 @@ demog.sum.func <- function(){
 
   # Summarize Total (by Endpoint)
   df.sum.total1 <<- obsdf %>%
+    distinct_at(c("UID2", endpcolName, demog_grp_var_label), .keep_all = T) %>%
     group_by(across(.cols = all_of(x = c(endpcolName)))) %>%
     summarise(Total = n_distinct(UID2, na.rm = F),
               Events = n_distinct(UID2[across(all_of(dvf)) == "Yes"], na.rm = T),
