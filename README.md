@@ -16,7 +16,11 @@ To install this tool
     library(devtools)
     install_github("yuchenw2015/PoissonERM",build = FALSE)
 
-If see an error of "! System command 'Rcmd.exe' failed", try running Sys.setenv(R_REMOTES_STANDALONE="true") before installation.
+If see an error of "! System command 'Rcmd.exe' failed", try running 
+
+    Sys.setenv(R_REMOTES_STANDALONE="true") 
+    
+before installation.
 
 To use this tool, you will need:
 
