@@ -173,55 +173,61 @@ pre code {
 </div>
 <div id="modeling-software-and-strategy" class="section level2">
 <h2>Modeling: Software and Strategy</h2>
-<p>The E-R analyses, data processing, and generation of figures and tables were performed in R.The poisson regression analyses were performed using the glm() function in the R programming language.</p>
-<p>The analyses for each endpoint followed the below steps:</p>
+<p>The E-R analyses, data processing, and generation of figures and tables are performed in R programming language.The Poisson regression analyses are performed using the glm() function.</p>
+<p>The analyses for each endpoint follow the below steps:</p>
 <ul>
-<li>Univariate models were estimated to compare and select the best exposure metric, if any. The model only contains exposure metric is the base model.</li>
+<li>Univariate models are estimated to compare and select the best exposure metric, if any. The model only contains exposure metric is the base model.</li>
 <li>Predicted cumulative incidence rate from the base model are created in form of figures and tables if requested by user.</li>
 <li>If covariates are evaluated, then a full covariate model is estimated with the selected best exposure, if any, along with all covariates specified by the user.</li>
 <li>If covariates are to be evaluated, then a backwards elimination procedure is run to determine a final model.<br />
 </li>
-<li>The final covariate model is estimated.</li>
-<li>Risk Ratio figures and tables are created if any demographic covariates are included in the final covariate model.</li>
+<li>The final model including covariates is estimated.</li>
+<li>Risk Ratio figures and tables are created if any demographic covariates are included in the final model.</li>
+<li>If requested, simulations are performed using the final model.</li>
 </ul>
-<p>An E-R analysis was performed for all endpoints even if the number of events was very low.</p>
+<p>The E-R analysis is performed for each endpoints when the number of events meet the threshold (user choice).</p>
+</div>
+<div id="poisson-distribuion-and-binomial-distribution" class="section level2">
+<h2>Poisson Distribuion and Binomial Distribution</h2>
+<p>Poisson regression modeling of the rate of an event occurrence for the population in a given time interval is a development based on the asymptotic convergence of a Binomial distribution with a rate <span class="math inline">\(\pi\)</span> and a large number of times the event is tested When the count of the events follow a Binomial distribution where</p>
+<p><span class="math display">\[Y \sim Binomial(t, \pi)\]</span></p>
+<p>where, in this case, <span class="math inline">\(t\)</span> is some unit of time and <span class="math inline">\(\pi\)</span> is the constant rate of the event over time. When <span class="math inline">\(t\)</span> is large and <span class="math inline">\(\pi\)</span> is small (rare event), the distribution can be approximated as <span class="math display">\[Y \sim Poisson(\lambda)\]</span> where <span class="math inline">\(\lambda=t\pi\)</span> and <span class="math inline">\(\lambda\)</span> is the mean count of the event in the given time interval. Then, the event rate can be modeled using Poisson regression with the following linearization <span class="math display">\[log(\lambda_i)=log(t_i)+log(\pi_i)\]</span> where <span class="math inline">\(log(t_i)\)</span> is modeled as an offset in the model.</p>
+<p><code>PoissonERM</code> is designed to conduct this type of analysis where the offset for time is built into the linearization of the model. The full analysis can be conducted for multiple endpoints with the models developed separately for each endpoint. This section describes the methodology behind the automated statistical analysis via <code>PoissonERM</code> and several key options that requires user’s input.</p>
 </div>
 <div id="base-model-description" class="section level2">
 <h2>Base Model Description</h2>
-<p>In the base model, exposure metrics were tested as predictors for the occurrence of an event.</p>
+<p>In the base model, user-specified exposure metrics are tested as predictors for the occurrence of an event.</p>
 <p>The linear, square-root-transformed, and log-transformed scales of exposure metrics were investigated. Since the main purpose of the E-R analysis was to identify potential relationships between endpoints and exposure metrics, the endpoint was only explored and was not part of the main analysis conclusions if no exposure metric was defined.</p>
-<p>The probability of observing an Adverse Event (AE) is described by the Poisson distribution: <span class="math display">\[\begin{equation}
-\label{eqn:P}
-\text{P}\left(Y_{j} = n\right) = \frac{\lambda^{n}}{n!}\cdot e^{-\lambda}
-\end{equation}\]</span> Where <span class="math inline">\(\text{P}\left(Y_{j} = n\right)\)</span> is the probability of observing <span class="math inline">\(Y\)</span> during an interval <span class="math inline">\(j\)</span>, where <span class="math inline">\(Y\)</span> can take on values <span class="math inline">\(n = 0, 1, 2,\dotsc\)</span>, <span class="math inline">\(\lambda\)</span> is an estimable parameter describing the mean count, and <span class="math inline">\(!\)</span> is the factorial function.</p>
-<p>The expectation for the Poisson distribution <span class="math inline">\(\text{E}\left(Y_{j}\right)\)</span> is equal to <span class="math inline">\(\lambda\)</span>, and therefore <span class="math inline">\(\lambda\)</span> is the arithmetic mean of the counts occurring during a certain time interval. The variance of the Poisson distribution is not governed by an additional parameter (such as <span class="math inline">\(\sigma\)</span> for a normal distribution), but by <span class="math inline">\(\lambda\)</span> as well. Therefore, <span class="math inline">\(\lambda\)</span> defines both the mean and the variance of the distribution of observations. <span class="math display">\[\begin{equation}
-\label{eqn:lambda}
-\lambda = \text{E}\left(Y_{j}\right) = \text{Var}\left(Y_{j}\right)
+<p>The counts of events are assumed to be characterizable using a Poisson regression. The linear form of the regression is defined as a function of the mean (event rate). The base model includes an intercept and potential exposure metric as</p>
+<p><span class="math display">\[\begin{equation}
+\label{eqn:mod_1}
+\text{log}(\frac{\lambda}{t_j}) = \beta_{0}+\beta_{1}\cdot \text{Exposure}_j
 \end{equation}\]</span></p>
-<p>A base model was developed using a poisson regression with an intercept and potentially an exposure metric as shown in below. <span class="math display">\[\begin{equation}
+<p>which is equivalent to</p>
+<p><span class="math display">\[\begin{equation}
 \label{eqn:mod}
 \text{log}(\lambda) = \beta_{0}+\text{log}\left(t_{j}\right)+\beta_{1}\cdot \text{Exposure}_j
 \end{equation}\]</span></p>
-<p>where <span class="math inline">\(\lambda\)</span> is the mean count, <span class="math inline">\(\beta_{0}\)</span> is the mean count when the time interval, <span class="math inline">\(t\)</span>, is equal to zero, <span class="math inline">\(\text{log}\left(t_{j}\right)\)</span> is the time-interval offset (days), <span class="math inline">\(\text{Exposure}_j\)</span> is the time-weighted Exposure at the time of AE driving the response in mean count, <span class="math inline">\(\beta_{1}\)</span> is the estimable effect of exposure on the mean count.</p>
+<p>where <span class="math inline">\(\lambda\)</span> is the mean count in a given time interval, <span class="math inline">\(\beta_{0}\)</span> is the mean count when the time interval, <span class="math inline">\(t\)</span>, is equal to zero, <span class="math inline">\(\text{log}\left(t_{j}\right)\)</span> is the time-interval offset (days), <span class="math inline">\(\text{Exposure}_j\)</span> is the time-weighted Exposure at the time of AE driving the response in mean count, <span class="math inline">\(\beta_{1}\)</span> is the estimable effect of exposure on the mean count.</p>
 <p>When assessing each exposure metric individually in the base model, the difference in the number of identifiable parameters (and therefore the <span class="math inline">\(df\)</span>) is equal to 1. Decision making during model building was guided by evaluation of change in deviance, or <span class="math inline">\(-2\cdot\)</span>{log-likelihood}, between models. The Deviance (DEV) was calculated as:  <span class="math display">\[\begin{equation}
 \label{eqn:dev}
 D=-2\log\left(\frac{L_0}{L_F}\right)
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\(L_0/L_F\)</span> is the ratio of the likelihood of the null and fitted models. <span class="math inline">\(D\)</span> can be shown to be approximately <span class="math inline">\(\chi^2\)</span> distributed with degrees of freedom equal to the difference in the number of parameters estimated between the null and fitted models.</p>
-<p>Based on user’s input, exposure metric selection was done in one of the following ways:</p>
+<p>Based on user’s input, exposure metric selection is done in one of the following ways:</p>
 <ul>
-<li>The exposure metric met the significant level (p_val) was selected for the base model for each endpoint analyzed. If there were more than one metric that met the criteria, the metric with the smallest <span class="math inline">\(p\)</span>-value was selected. If there was no metric that met the criteria, the base model would not contain any exposure metric.</li>
-<li>The exposure metric with the largest change in deviance <span class="math inline">\(\Delta D\)</span> was selected for the base model for each endpoint analyzed, regardless of statistical significance.</li>
+<li>The exposure metric met the significant level (p_val) is selected for the base model for each endpoint analyzed. If there are more than one metric that met the criteria, the metric with the smallest <span class="math inline">\(p\)</span>-value is selected. If there is no metric that meets the criteria, the base model will not contain any exposure metric.</li>
+<li>The exposure metric with the largest change in deviance <span class="math inline">\(\Delta D\)</span> is selected for the base model for each endpoint analyzed, regardless of statistical significance.</li>
 </ul>
-<p>The generated report includes the details of user’s choice.</p>
+<p>The generated report includes the details of user’s choice for each threshold or criteria.</p>
 </div>
 <div id="random-effects-model-development" class="section level2">
 <h2>Random Effects Model Development</h2>
-<p>Since the Poisson regressions used only one measurement per subject, estimation of random effects was not possible.</p>
+<p>Since the Poisson regressions used only one measurement per subject, estimation of random effects is not possible.</p>
 </div>
 <div id="inclusion-of-covariates-and-full-model-development" class="section level2">
 <h2>Inclusion of Covariates and Full Model Development</h2>
-<p>Both categorical and continuous covariates were tested for inclusion using a linear parameterization in the poisson regressions.</p>
+<p>Both categorical and continuous covariates are tested for inclusion using a linear parameterization in the poisson regressions.</p>
 <p>The covariate parameter structure that was used for categorical and continuous covariates is described below: -Linear parameterization for a categorical covariate x: <span class="math display">\[\begin{equation}
 \text{COV} = 1; \text{most common}\\
 \theta=\theta_0 \cdot \text{COV}
@@ -230,23 +236,30 @@ D=-2\log\left(\frac{L_0}{L_F}\right)
 \theta=\theta_0 \cdot (\text{COV}-\text{reference})
 \end{equation}\]</span></p>
 <p>where <span class="math inline">\(\theta_0\)</span> denotes the population value conditional on the value of the covariate, which changes linearly as a function of COV, reference value is usually the observed median value or given by user. Continuous covariates might be explored in the logarithmic scale and were tested in the models in the scale where the covariate follows a normal distribution.</p>
-<p>If the user set <code>con.model.ref = &quot;No&quot;</code> for not using reference value in continuous covariates parameterization, <span class="math inline">\(\text{reference} = 0\)</span>.</p>
-<p>Categorical covariate would be dropped in full model development if all events occurred in only one of its categories. If any of the covariates were highly correlated (e.g. AST and ALT) with a correlation coefficient <span class="math inline">\(\ge0.6\)</span>, then only one of the correlated covariates was tested further based on univariate DEV. The <span class="math inline">\(\chi^2\)</span> test for the log-likelihood difference in deviance between models was used to judge whether one model had a better fit over another during the backward elimination using an <span class="math inline">\(\alpha\)</span> (p_val_b) provided by user. When the removal of any of the remaining covariates results in a <span class="math inline">\(\Delta D\)</span> equivalent to p-value less than the <span class="math inline">\(\alpha\)</span> provided by user, the elimination process was stopped and the model was considered final.</p>
+<p>If the user set <code>con.model.ref = &quot;No&quot;</code> to not use reference value in continuous covariates parameterization, <span class="math inline">\(\text{reference} = 0\)</span>.</p>
+<p>Categorical covariate will be dropped in full model development if all events occurred in only one of its categories. If any of the covariates are highly correlated (e.g. AST and ALT) with a correlation coefficient <span class="math inline">\(\ge0.6\)</span>, then only one of the correlated covariates is tested further based on univariate DEV. The <span class="math inline">\(\chi^2\)</span> test for the log-likelihood difference in deviance between models is used to judge whether one model has a better fit over another during the backward elimination using an <span class="math inline">\(\alpha\)</span> (p_val_b) provided by user. When the removal of any of the remaining covariates results in a <span class="math inline">\(\Delta D\)</span> equivalent to p-value less than the <span class="math inline">\(\alpha\)</span> provided by user, the elimination process is stopped and the model was considered final.</p>
 </div>
 <div id="missing-data" class="section level2">
 <h2>Missing Data</h2>
-<p>Missing data within covariates was imputed provided the percentage of missing values was <span class="math inline">\(\le p.icon\)</span> for continuous covariates and <span class="math inline">\(\le p.icat\)</span> for categorical covariates. <span class="math inline">\(p.icon\)</span> and <span class="math inline">\(p.icat\)</span> were provided by user. For continuous covariates, the median value was used for the imputed value. For categorical covariates, the mode was used for the imputed value. If the percentage of missing values was larger than the stated threshold, the covariates were excluded from consideration for the endpoint.</p>
+<p>Missing data within covariates is imputed provided the percentage of missing values is <span class="math inline">\(\le p.icon\)</span> for continuous covariates and <span class="math inline">\(\le p.icat\)</span> for categorical covariates. <span class="math inline">\(p.icon\)</span> and <span class="math inline">\(p.icat\)</span> are provided by user. For continuous covariates, the median value is used for the imputed value. For categorical covariates, the mode is used for the imputed value. If the percentage of missing values is larger than the stated threshold, the covariates are excluded from consideration for the endpoint.</p>
 </div>
 <div id="full-model-development" class="section level2">
 <h2>Full Model Development</h2>
-<p>To assess the E-R relationship between potential covariates and each of the endpoints, a poisson regression model was used as: <span class="math display">\[\begin{equation}
+<p>To assess the E-R relationship between potential covariates and each of the endpoints, a poisson regression model is used as:</p>
+<p><span class="math display">\[\begin{equation}
+\label{eqn:LRbasecov_1}
+\text{log}(\frac{\lambda}{t_j}) = \beta_{0} + \beta_1\cdot\text{Exposure}_j + \beta_2\cdot X_2 + \cdots + \beta_n\cdot X_n
+\end{equation}\]</span></p>
+<p>which is equivalent to</p>
+<p><span class="math display">\[\begin{equation}
 \label{eqn:LRbasecov}
 \text{log}(\lambda) = \beta_{0} + \text{log}\left(t_{j}\right) + \beta_1\cdot\text{Exposure}_j + \beta_2\cdot X_2 + \cdots + \beta_n\cdot X_n
-\end{equation}\]</span> where <span class="math inline">\(\lambda\)</span> is the arithmetic mean of the counts occurring during a certain time interval, <span class="math inline">\(\beta_0\)</span> is the estimated intercept, <span class="math inline">\(\beta_1\)</span> is a regression coefficient (slope) representing the effect of the exposure metric, if any, based on base model development, and <span class="math inline">\(\beta_2,\ldots,\beta_n\)</span> represent the effect, if any, of each additional covariate on the log-odds of the event occurring.</p>
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\lambda\)</span> is the arithmetic mean of the counts occurring during a certain time interval, <span class="math inline">\(\beta_0\)</span> is the estimated intercept, <span class="math inline">\(\beta_1\)</span> is a regression coefficient (slope) representing the effect of the exposure metric, if any, based on base model development, and <span class="math inline">\(\beta_2,\ldots,\beta_n\)</span> represent the effect, if any, of each additional covariate on the log-odds of the event occurring.</p>
 </div>
 <div id="final-model-development" class="section level2">
 <h2>Final Model Development</h2>
-<p>Final model development started with the full model, containing the parameters from the base model and any additional covariates under consideration. The full model was then subjected to a stepwise backwards elimination procedure, outlined below.</p>
+<p>Final model development starts with the full model, containing the parameters from the base model and any additional covariates under consideration. The full model is then subjected to a stepwise backwards elimination procedure, outlined below.</p>
 <p>To compare two nested models, the difference in the deviance of each of the models also follows an approximately <span class="math inline">\(\chi^2\)</span> distribution with degrees of freedom equal to the difference in the number of estimated parameters:</p>
 <p><span class="math display">\[\begin{equation}
 \label{eqn:nest}
