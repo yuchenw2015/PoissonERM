@@ -128,17 +128,11 @@ read.dataset.func <- function(){
   # Convert response variable to factor
   obsdf[, dvf] <- factor(x = obsdf[, dv], levels = dv.factor$levels, labels = dv.factor$labels)
 
-  #if("TRTG" %in% colnames(x = obsdf)){
-  #  obsdf$MISSPK <- 0
-  #  for(i in 1:nrow(x = obsdf)){
-  #    if(obsdf[i, "TRTG"] != "Placebo" & all(obsdf[i, names(x = exposureCov)] == 0)){
-  #      obsdf[i, "MISSPK"] <- 1
-  #    } # if
-  #  } # for
-  #  obsdf <- obsdf[obsdf$MISSPK == 0, ]
-  #  obsdf <- subset(x = obsdf, select = -MISSPK)
-  #  obsdf$TRTG <- gsub(pattern = "_", replacement = " ", x = obsdf$TRTG)
-  #} # if
+  if(!demog_grp_var_label%in%colnames(obsdf)) {
+    demog_grp_var <<- "PROTnew"
+    demog_grp_var_label <<- "PROTnew"
+    obsdf <- obsdf %>% mutate(PROT = "All observations")
+  }
 
 
   ###########

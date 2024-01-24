@@ -327,8 +327,9 @@ process.user.input.func <- function(){
   }
   p.yes.up <<- 100 - p.yes.low
 
+  if(!exists("demog_grp_var")) {demog_grp_var <<- "PROT"}
   # if demog_grp_var is also a variable for modeling
-  if(demog_grp_var %in% names(full.cat)){
+   if(demog_grp_var %in% names(full.cat)){
     demog_grp_var_label <<- full.cat.1[[which(names(full.cat.1)==demog_grp_var)]]$label
   }else{
     demog_grp_var_label <<- demog_grp_var

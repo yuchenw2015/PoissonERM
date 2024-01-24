@@ -30,19 +30,6 @@ demog.sum.func <- function(){
   demog <- demog %>%
     mutate_if(is.numeric, round, digits = 1)
   demog <<- demog
-  # Patient summary by Protocol
-  if(exists("full.cat")){
-    if("PROT" %in% names(x = full.cat)){
-      prot.var <<- tail(x = full.cat$PROT, 1)
-    } else{ # if
-      prot.var <<- "PROT"
-    } # else
-  } else{ # if
-    prot.var <<- "PROT"
-  } # else
-  # Make additional grouping variable PROT if not declared in user_input
-  if(!exists("demog_grp_var")) {demog_grp_var <<- prot.var}
-  if(!exists("demog_grp_var_label")) {demog_grp_var_label <<- demog_grp_var}
 
   demog_tot <<- tot_sum.func(df = demog, groups = demog_grp_var_label)
 
