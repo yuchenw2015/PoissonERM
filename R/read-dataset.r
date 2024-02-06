@@ -128,7 +128,7 @@ read.dataset.func <- function(){
   # Convert response variable to factor
   obsdf[, dvf] <- factor(x = obsdf[, dv], levels = dv.factor$levels, labels = dv.factor$labels)
 
-  if(!demog_grp_var_label%in%colnames(obsdf)) {
+  if((!demog_grp_var_label%in%colnames(obsdf))&(!demog_grp_var%in%colnames(obsdf))) {
     demog_grp_var <<- "PROTnew"
     demog_grp_var_label <<- "PROTnew"
     obsdf <- obsdf %>% mutate(PROT = "All observations")
