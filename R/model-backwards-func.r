@@ -58,10 +58,10 @@ model_backwards.func <- function(model, scope, remove_p = p_val_b, outfile){
       ) # sapply
       rownames(x = x) <- x.relabel.row.names
       x$`Pr(>Chi)` <- formatC(x = x$`Pr(>Chi)`, digits = 4, format = "f")
+      max_p <- max(x$`Pr(>Chi)`[2:nrow(x)])
       x$`Pr(>Chi)`[x$`Pr(>Chi)` == "0.0000"] <- "<0.0001"
       x[c("Deviance", "AIC", "LRT")] <- formatC(x = unlist(x = x[c("Deviance", "AIC", "LRT")]), digits = 2, format = "f")
       print(knitr::kable(x))
-      max_p <- max(x$`Pr(>Chi)`[2:nrow(x)])
       # Determine if p-value greater than the pre-chosen p-level;
       # then remove corresponding term.
       if(max_p > removeLevel){
