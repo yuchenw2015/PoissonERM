@@ -33,7 +33,7 @@ or update your personal access token
 and select "2". See how to get a new access token here: https://docs.github.com/en/enterprise-server@3.9/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens. 
 
 
-To use `PoissonERM`, you will need:
+To conduct an exposure-response analysis using the package `PoissonERM`, you will need:
 
   - A control script (user input) and a data set to fit the model(s).
   - A control script (prediction input) and a simulated/external exposure data set to create additional predicted incidence rates. This is optional.
