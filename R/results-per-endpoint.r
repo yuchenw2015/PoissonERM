@@ -115,7 +115,7 @@ base_model_prediction_body <- function(endpoint_name,endpoint_text_name=NULL){
                                     "in the analysis population", paste0("(n of bins = ", bin_n_obs, ")."),
                                     "The blue line, (and blue shaded area) are the model-predicted mean (and 95\\% CI) incidence per 100 patient years for the range of observed",
                                     "exposure metric in the analysis population. Red circles and error bars are the model-predicted mean and 95\\% CI, respectively, incidence of",
-                                    endpoint_text_name, "per 100 patients years.",
+                                    endpoint_text_name, "per 100 patient years.",
                                     "Bottom:",expo_pred_tab_caption),
                               paste("Top: Gray circles and error bars are the observed mean and 95\\% CI, respectively, of the incidence of",
                                     endpoint_text_name, "(all types) per 100 patient years for each bin of the shown exposure metric",

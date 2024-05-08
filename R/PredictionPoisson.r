@@ -253,6 +253,7 @@ PredictionPoisson <- function(pathRunType = getwd(), prediction.input = NULL, mo
       ggsave(plot = p.ev,filename = paste0("pred_incidence_across_exposure.png"),
              width = default.height,height = default.width*0.75,
              units = default.units)
+      save(p.ev, file = "pred_incidence_across_exposure.RData")
 
       # Generate a figure of prediction exposures for each dose on the same
       # scale as incidence plot
@@ -274,6 +275,7 @@ PredictionPoisson <- function(pathRunType = getwd(), prediction.input = NULL, mo
       ggsave(plot = p.expo,filename = "Expo_dist.png",
              width = default.height,height = default.width*0.333,
              units = default.units)
+      save(p.expo,file = "Expo_dist.RData")
 
       # Remove axis label for x-axis before combining plots
       p.ev2 <- p.ev + scale_x_log10("",
@@ -310,7 +312,7 @@ PredictionPoisson <- function(pathRunType = getwd(), prediction.input = NULL, mo
 
         colnames(output.tab)[colnames(output.tab)=="data"] <- "Group"
         colnames(output.tab)[colnames(output.tab)=="Expo"] <- convert_express_latex.func(text_to_convert = exposureCov[[Expo_to_across_expo_plot]])
-        colnames(output.tab)[colnames(output.tab)=="pred.summ"] <- "Cumulative Incidence per 100 Patients (Mean [95\\% CI])"
+        colnames(output.tab)[colnames(output.tab)=="pred.summ"] <- "Cumulative Incidence per 100 Patient Years (Mean [95\\% CI])"
         # Write to .tex
         if(LaTex.table){
           write.table(x = output.tab, file = "mod_pred.tex", sep = " & ",
