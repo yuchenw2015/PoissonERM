@@ -1,2 +1,2 @@
 exportPattern("^[[:alpha:]]+")
-import(compiler, stats, tidyverse, broom, gridExtra, R.utils, stringr, data.table, ggcorrplot, DescTools, cowplot, PKNCA, nortest, glue, Hmisc, xtable, survival, ggridges, kableExtra)
+import(compiler, stats, tidyverse, broom, gridExtra, R.utils, stringr, data.table, ggcorrplot, DescTools, cowplot, PKNCA, nortest, glue, Hmisc, xtable, survival, ggridges, kableExtra, bookdown)
