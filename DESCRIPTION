@@ -8,6 +8,6 @@ Description: PoissonERM is to automate Exposure-Response analysis for binary-end
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: compiler, stats, tidyverse, broom, gridExtra, R.utils, stringr, data.table, ggcorrplot, DescTools, cowplot, PKNCA, nortest, glue, Hmisc, xtable, survival, ggridges, kableExtra
+Imports: compiler, stats, tidyverse, broom, gridExtra, R.utils, stringr, data.table, ggcorrplot, DescTools, cowplot, PKNCA, nortest, glue, Hmisc, xtable, survival, ggridges, kableExtra, bookdown
 
 RoxygenNote: 7.2.3
