@@ -203,6 +203,10 @@ install_github(&quot;yuchenw2015/PoissonERM&quot;,build = FALSE)</code></pre>
 <li>One project, one folder. The data sets and the control scripts are stored in the same directory as all analysis results. Using one folder for multiple projects may bring confusions.</li>
 <li>The directory path must be an absolute path. After running <code>ModelPoisson()</code>, the working directory will be the provided <code>pathRunType</code>. If <code>pathRunType</code> was a relative path, it will not work in <code>PredictionPoisson()</code>. It is recommended to always use an absolute path, or always use <code>pathRunType = getwd()</code> (also the default value of <code>pathRunType</code>) in <code>PredictionPoisson()</code> or <code>ReportPoisson()</code> after running <code>ModelPoisson()</code>.</li>
 </ul>
+<div id="package-dependencies" class="section level3">
+<h3>Package Dependencies</h3>
+<p>compiler(&gt;=4.1.1), stats(&gt;=4.1.1), tidyverse(&gt;=1.3.1), broom(&gt;=0.7.8), gridExtra(&gt;=2.3), R.utils(&gt;=2.10.1), stringr(&gt;=1.4.0), data.table(&gt;=1.14.0), ggcorrplot(&gt;=0.1.3), DescTools(&gt;=0.99.42), cowplot(&gt;=1.1.1), PKNCA(&gt;=0.9.4), nortest(&gt;=1.0.4), glue(&gt;=1.4.2), Hmisc(&gt;=4.5.0), xtable(&gt;=1.8.4), survival(&gt;=3.2.11), ggridges(&gt;=0.5.3), kableExtra(&gt;=1.3.4), bookdown(&gt;=0.22).</p>
+</div>
 </div>
 
 
