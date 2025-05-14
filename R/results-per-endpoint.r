@@ -143,7 +143,7 @@ OR.model.body.fig <- function(endpoint_name,endpoint_text_name=NULL){
     #endpoint_text_name <- gsub("\\\\textbf","",endpoint_text_name)
   }
   path_to_output = paste(gsub(" ","-",endpoint_name),"OR",sep="/")
-  fig_title <- paste("Odds Ratio for ",endpoint_text_name)
+  fig_title <- paste("Risk Ratio for ",endpoint_text_name)
   fig_caption <- "95\\% confidence intervals are presented with the estimate."
   if(file.exists(paste(path_to_output,paste(endpoint_name,"odds.png",sep="-"),sep="/"))){
   OR_output_body_figure <- make_pmx_figure_chunk(
