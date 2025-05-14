@@ -106,7 +106,7 @@ oddsplot.func <- function(.mod){
         #               labels = scale,
         #               limits = c(0, logscale[which.max(logscale > max(oddsdf$conf.high))])
         #               ) +
-        xlab("Odds Ratio (log scale)") +
+        xlab("Risk Ratio (log scale)") +
         ylab(label = "Effects")
       filename <- paste(gsub(pattern = " ", replacement = "-", x = names(endpName)[z == sapply(X = endpName, "[[", 1)]), "odds.png", sep = "-")
       if(nrow(oddsdf) >= 5){
