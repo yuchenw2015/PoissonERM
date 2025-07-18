@@ -300,7 +300,7 @@ ConclusionsInterpretCovariates <- function(endpoint_name=NULL){
         iter.cat.res <- cov_OR_out %>% subset(Name == var_name_tidy.func(cc,tex=T))
         ref_level_text <- paste(iter.cat.res$Name[1],iter.cat.res$RefLevel[1]) # only need first row if multiple levels
         final_est_text <- paste(format(iter.cat.res$estimate,digits=3),iter.cat.res$ci)
-        iter.text <- c("The covariate ",cc,", with the reference level of ",ref_level_text,", resulted in a statistically significant improvement in the model fit. The odds ratios and 95\\% confidence intervals for ", comma_and_syntax(paste(iter.cat.res$Name,iter.cat.res$levels))," are ",comma_and_syntax(final_est_text),", respectively.")
+        iter.text <- c("The covariate ",cc,", with the reference level of ",ref_level_text,", resulted in a statistically significant improvement in the model fit. The risk ratios and 95\\% confidence intervals for ", comma_and_syntax(paste(iter.cat.res$Name,iter.cat.res$levels))," are ",comma_and_syntax(final_est_text),", respectively.")
         conc_text <- c(conc_text,paste(gsub("~"," ", var_name_tidy.func(iter.text,tex=T)),collapse=""))
       }
     }

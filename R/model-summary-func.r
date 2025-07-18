@@ -36,7 +36,7 @@ model_summary.func <- function(model){
   comb <- left_join(reg_tbl, odds.df, by = "term")
   comb[is.na(comb)] <- "-"
   names(comb) <- c("Effects", "Estimate", "95\\% CI", "z value",
-                   "Pr(>|z|)", "Odds Ratio", "95\\% CI of Odds Ratio")
+                   "Pr(>|z|)", "Risk Ratio", "95\\% CI of Risk Ratio")
   comb$Effects <- var_name_tidy.func(comb$Effects, tex = T)
   if(any(comb$Effects != "(Intercept)")){
     mod.terms <- comb$Effects[comb$Effects != "(Intercept)"]
